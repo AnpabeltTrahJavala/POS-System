@@ -1,0 +1,121 @@
+type Query {
+  categories: [Categories] @all
+  category(id: ID @eq): Categories @find
+  customers: [Customer] @all
+  customer(id: ID @eq): Customer @find
+  products: [Products] @all
+  product(id: ID @eq): Products @find
+  orders: [Orders] @all
+  order(id: ID @eq): Orders @find
+}
+
+type Mutation {
+  createCategory(title: String!, description: String!, status: Int!, timestamp: Int!): Categories! @create
+  updateCategory(id: ID!, title: String, description: String, status: Int): Categories! @update
+  deleteCategory(id: ID!): Categories @field(resolver: "App\\GraphQL\\Mutations\\GeneralMutator@deleteCategory")
+
+  createCustomer(title: String!, nama_lengkap: String!, email: String!, alamat: String!, nama_perusahaan: String!, status: Int!, timestamp: Int!): Customer! @create
+  updateCustomer(id: ID!, nama_lengkap: String, email: String, alamat: String, nama_perusahaan: String, status: Int): Customer! @update
+  deleteCustomer(id: ID!): Customer @field(resolver: "App\\GraphQL\\Mutations\\GeneralMutator@deleteCustomer")
+
+  createProduct(name: String!, description: String!, buy_price: Float!, sell_price: Float!, stock: Int!, status: Int!, id_category: Int!, timestamp: Int!): Products! @create
+  updateProduct(id: ID!, name: String, description: String, buy_price: Float, sell_price: Float, stock: Int, status: Int, id_category: Int): Products! @update
+  deleteProduct(id: ID!): Products @field(resolver: "App\\GraphQL\\Mutations\\GeneralMutator@deleteProduct")
+
+  createOrder(
+    no_invoice: String!, 
+    nama_lengkap: String!, 
+    email: String!, 
+    alamat: String!, 
+    no_telpon: String!, 
+    subtotal: Int!, 
+    shipping_cost: Int,
+    additional_cost: Int,
+    discount: Int,
+    total: Int!,
+    status: String!,
+    notes: String,
+    timestamp: Int!
+  ): Orders! @create
+  updateOrder(
+    id: ID!,
+    no_invoice: String, 
+    nama_lengkap: String, 
+    email: String, 
+    alamat: String, 
+    no_telpon: String, 
+    subtotal: Int, 
+    shipping_cost: Int,
+    additional_cost: Int,
+    discount: Int,
+    total: Int,
+    status: String,
+    notes: String
+  ): Orders! @update
+  deleteOrder(id: ID!): Orders @field(resolver: "App\\GraphQL\\Mutations\\GeneralMutator@deleteOrder")
+
+  createOrderDetails(name: String!, quantity: Int!, price: Float!, id_order: Int!, id_product: Int!): OrderDetails! @create
+  updateOrderDetails(id: ID!, name: String, quantity: Int, price: Float, id_order: Int, id_product: Int): OrderDetails! @update
+  deleteOrderDetails(id: ID!): OrderDetails @field(resolver: "App\\GraphQL\\Mutations\\GeneralMutator@deleteOrderDetail")
+}
+
+type Categories {
+  id: ID
+  title: String
+  description: String
+  status: Int
+  products: [Products]
+  timestamp: Int
+}
+
+type Customer {
+  id: ID
+  nama_lengkap: String
+  email: String
+  nomor_telpon: String
+  alamat: String
+  nama_perusahaan: String
+  status: Int
+  timestamp: Int
+}
+
+type Products {
+  id: ID
+  thumbnail: String
+  name: String
+  description: String
+  buy_price: Float
+  sell_price: Float
+  stock: Int
+  status: Int
+  category: Categories
+  timestamp: Int
+}
+
+type Orders {
+  id: ID
+  no_invoice: String
+  nama_lengkap: String
+  email: String
+  alamat: String
+  no_telpon: String
+  subtotal: Float
+  shipping_cost: Float
+  additional_cost: Float
+  discount: Float
+  total: Float
+  status: String
+  notes: String
+  customer: Customer
+  details: [OrderDetails]
+  timestamp: Int
+}
+
+type OrderDetails {
+  id: ID
+  name: String
+  quantity: Int
+  price: Float
+  order: Orders
+  product: Products
+}
